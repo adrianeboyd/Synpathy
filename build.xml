@@ -13,6 +13,7 @@
 
     - .
 		+- build
+		+- dist
 		+- lib
 		+- src
 			+- java/
@@ -22,10 +23,17 @@
 
 	</description>
 
+	<tstamp>
+		<format property="build.date" pattern="yyyy-MM-dd hh:mm:ss" />
+	</tstamp>
+
 	<!-- properties -->
 	<property name="SRCDIR" value="src" />
 	<property name="LIB" value="lib" />
 	<property name="BUILDDIR" value="build" />
+	<property name="DISTDIR" value="dist" />
+
+	<property name="version" value="1.0.1" />
 
 	<!-- classpath -->
 	<fileset id="classpath.jars" dir="${LIB}" />
@@ -57,6 +65,28 @@
 		</javac>
 	</target>
 
+	<!-- generates the distribtuion -->
+	<target name="dist" depends="compile" description="Generates the distribution">
+		<copy file="log4j.properties" todir="${DISTDIR}"/>
+		<copy todir="${DISTDIR}/${LIB}">
+			<fileset dir="${LIB}" />
+		</copy>
+		<manifestclasspath property="lib.list" jarfile="${DISTDIR}/synpathy.jar">
+			<classpath>
+				<fileset dir="${DISTDIR}/${LIB}" />
+			</classpath>
+		</manifestclasspath>
+		<jar basedir="build" jarfile="${DISTDIR}/synpathy.jar">
+			<manifest>
+				<attribute name="Built-By" value="${user.name}"/>
+				<attribute name="Class-Path" value="${lib.list}"/>
+				<attribute name="Main-Class" value="ims.tiger.gui.tigergrapheditor.SyntaxEditor"/>
+				<attribute name="Version" value="${version}"/>
+				<attribute name="Build" value="${build.date}"/> 
+			</manifest>
+		</jar>
+	</target>
+
 	<!-- compiles the sources and starts Synpathy from the build dir. -->
 	<target name="start" depends="compile" description="Compiles and starts Synpathy">
 
@@ -71,10 +101,20 @@
 		</java>
 	</target>
 
-	<!-- cleans the build directory -->
-	<target name="clean" description="Cleans the build directory">
+	<!-- cleans the build and dist directory -->
+	<target name="clean" description="Cleans the build and dist directory">
 		<delete includeEmptyDirs="true">
 			<fileset dir="${BUILDDIR}" />
+		</delete>
+		<delete includeEmptyDirs="true">
+			<fileset dir="${DISTDIR}" />
+		</delete>
+	</target>
+
+	<!-- cleans the dist directory -->
+	<target name="distclean" description="Cleans the dist directory">
+		<delete includeEmptyDirs="true">
+			<fileset dir="${DISTDIR}" />
 		</delete>
 	</target>
 
