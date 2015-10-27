@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+
+<project name="synpathy" default="start">
+
+	<description>
+	This build script contains targets to compile and start Synpathy. 
+	The source tree is a section of the MPI tools source tree and contains 
+	only the files that are needed for building and running Synpathy.
+
+	Requirements:
+	Ant 1.6.5 or higher
+    The following directory structure is assumed:
+
+    - .
+		+- build
+		+- lib
+		+- src
+			+- java/
+				+- ims/
+				+- mpi/
+        build.xml
+
+	</description>
+
+	<!-- properties -->
+	<property name="SRCDIR" value="src" />
+	<property name="LIB" value="lib" />
+	<property name="BUILDDIR" value="build" />
+
+	<!-- classpath -->
+	<fileset id="classpath.jars" dir="${LIB}" />
+
+	<patternset id="resources.set">
+		<include name="ims/tiger/images/*" />
+		<include name="ims/tiger/resources/**" />
+		<include name="ims/tiger/gui/tigergrapheditor/resources/*" />
+		<include name="mpi/util/gui/resources/Top16.gif" />
+		<include name="mpi/util/gui/resources/Bottom16.gif" />
+	</patternset>
+
+	<!-- copies resources (non-java files) to the build directory -->
+	<target name="resources" description="copies resources to the build dir">
+		<copy todir="${BUILDDIR}">
+			<fileset dir="${SRCDIR}">
+				<patternset refid="resources.set" />
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- compiles the java files -->
+	<target name="compile" depends="resources" description="Compiles the sources without cleaning">
+		<echo message="Compile with java version ${java.version}" />
+		<javac srcdir="${SRCDIR}" destdir="${BUILDDIR}" verbose="no" debug="yes" deprecation="off" memoryMaximumSize="128m" fork="true">
+			<classpath>
+				<fileset refid="classpath.jars" />
+			</classpath>
+		</javac>
+	</target>
+
+	<!-- compiles the sources and starts Synpathy from the build dir. -->
+	<target name="start" depends="compile" description="Compiles and starts Synpathy">
+
+		<java classname="ims.tiger.gui.tigergrapheditor.SyntaxEditor" fork="yes">
+			<!-- load an syntax file on startup
+      <arg value="${syntaxfile}"/>
+    -->
+			<classpath>
+				<pathelement path="${BUILDDIR}" />
+				<fileset refid="classpath.jars" />
+			</classpath>
+		</java>
+	</target>
+
+	<!-- cleans the build directory -->
+	<target name="clean" description="Cleans the build directory">
+		<delete includeEmptyDirs="true">
+			<fileset dir="${BUILDDIR}" />
+		</delete>
+	</target>
+
+</project>

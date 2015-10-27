@@ -1,0 +1,45 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html xmlns="http://www.w3.org/TR/REC-html40">
+<head profile="http://dublincore.org/documents/dcq-html/">
+<title>Synpathy - edit help</title>
+<meta http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<link rel="schema.DCTERMS" href="http://purl.org/dc/terms/">
+<meta name="DC.author" content="Alexander Klassmann">
+<meta name="DC.publisher" content="Max Planck Institute for Psycholinguistics">
+<style> body { font-family: "Lucida Grande", Verdana, Lucida, Helvetica, Arial,
+	sans-serif; font-size: 100%; background-color: #FFFFFF; color: Black; margin: 20;
+	padding: 2; } ul { list-style-type: square; } </style>
+
+</head>	
+<body>
+<H3 align="center">
+How to edit:
+</H3>
+<ol>
+<li><b>importing terminal nodes (words):</b><br><br>
+<p>You have to import terminal nodes from an external plain-text-file. It should have the following block structure for each sentence, followed by an empty line:<br>
+<blockquote>
+you go out of the institute<br>
+pro v adv prep art n
+</blockquote>
+Apart from the words, each block can contain an arbitrary number of additional lines, representing further terminal node features like 'Part-of-Speech', etc.	
+</p>
+<br>
+<br>	
+<li><b>adding/manipulating non-terminal nodes:</b><br><br>
+<p>
+First select at least one node by pressing the left mouse button. You can mark further nodes by keeping the CTRL-key pressed while clicking with the mouse (however you cannot mark nodes beneath another marked node).<BR></BR>
+
+Now, if you press the right mouse button, a popup-menu will be shown from which you can select an editing operation.
+
+For adding an egde you first have to select the "higher" node (where the edge comes from), than an arbitrary number of "lower" nodes (where the edge goes to). Secondary edges can point in the opposite direction, too.<BR></BR>
+</p>
+<p>
+In order to select labels, you first need to open an existing feature configuration (via menu "File") or to define it on you own (menu "Edit").
+<p>	To edit the label of a node, double-click into the node. A popup-menu will show. In the case of nonterminal nodes, you have to choose an entry from the offered list. If you need an item not present in the list, add it with the "Edit->Edit ... feature" option (and don't forget to save the changes!). 
+For terminal nodes, you may modify the list entries, but this will affect only the selected node. In order to change a value in the list permanently, you have to choose here again the "Edit" option.</p>
+</li>
+</ol>
+</body>
+</html>
