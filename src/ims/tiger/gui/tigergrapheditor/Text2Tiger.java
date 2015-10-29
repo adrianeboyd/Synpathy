@@ -106,7 +106,7 @@ public final class Text2Tiger {
                 for (int i = 0; i < tokens.length; i++) {
                     if (blockLineCount == 1) {
                         T_Node node = new T_Node();
-                        node.setID(sentence.getSentenceID() + "." + 1 + i);
+                        node.setID(sentence.getSentenceID() + ".t." + (i+1));
                         node.addFeature(featureNames[0], tokens[i]);
 
                         for (int j = 1; j < featureNames.length; j++) {

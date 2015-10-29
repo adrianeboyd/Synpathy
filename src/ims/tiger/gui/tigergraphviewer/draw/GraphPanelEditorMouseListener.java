@@ -663,8 +663,8 @@ public class GraphPanelEditorMouseListener extends GraphPanelMouseListener {
 
         do {
             highestNodeNumber++;
-            proposal = sentence.getSentenceID() + "." + highestNodeNumber;
-        } while (sentence.getNonterminalPositionOf(proposal) > -1);
+            proposal = sentence.getSentenceID() + ".nt." + highestNodeNumber;
+        } while (sentence.getNonterminalPositionOf(proposal) > -1 || sentence.getTerminalPositionOf(proposal) > -1);
 
         return proposal;
     }
