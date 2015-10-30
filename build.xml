@@ -33,7 +33,7 @@
 	<property name="BUILDDIR" value="build" />
 	<property name="DISTDIR" value="dist" />
 
-	<property name="version" value="1.0.1" />
+	<property name="version" value="1.1.0" />
 
 	<!-- classpath -->
 	<fileset id="classpath.jars" dir="${LIB}" />

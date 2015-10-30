@@ -734,8 +734,8 @@ public class GraphPanelEditorMouseListener extends GraphPanelMouseListener {
                 }
             }
 
-            //disable if not at least one NT node
-            if ((singleClickedNodes.size() == 2) && (clickedTNodeCount <= 1)) {
+            //allow sec edge creation between two nodes
+            if (singleClickedNodes.size() == 2) {
                 addSecEdgeAction.setEnabled(true);
 
                 //disable if already a sec edge between the two nodes
