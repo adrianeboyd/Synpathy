@@ -687,7 +687,7 @@ public class GraphPanelEditorMouseListener extends GraphPanelMouseListener {
                 //each nt node has to have at least one child
                 NT_Node parentNode = (NT_Node) sentence.getNode(node.getParent());
 
-                if (parentNode.getChildsSize() < 3) {
+                if (parentNode.getChildsSize() < 2) {
                     deleteEdgesAction.setEnabled(false);
                 }
             }
@@ -706,8 +706,7 @@ public class GraphPanelEditorMouseListener extends GraphPanelMouseListener {
                     ((Integer) singleClickedNodes.get(0)).intValue()) instanceof NT_Node &&
                 (singleClickedNodes.size() > 1));
 
-            //TODO: should be possible to allow single childs
-            addParentAction.setEnabled(singleClickedNodes.size() > 1);
+            addParentAction.setEnabled(singleClickedNodes.size() > 0);
 
             int clickedTNodeCount = 0;
 
