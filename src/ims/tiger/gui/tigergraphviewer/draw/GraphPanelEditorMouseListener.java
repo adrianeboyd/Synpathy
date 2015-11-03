@@ -52,6 +52,8 @@ import java.awt.event.MouseEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -389,6 +391,22 @@ public class GraphPanelEditorMouseListener extends GraphPanelMouseListener {
 
         sentence.addNonterminal(node);
 
+        // handle joining of nodes with parent
+        // all nodes have the same parent - otherwise addParentAction is disabled
+        int parent_id = sentence.getNode(((Integer) singleClickedNodes.get(0)).intValue()).getParent();
+        if (parent_id != -1) {
+            // remove all edges between clickedNodes and parent
+            for (int i = 0; i < singleClickedNodes.size(); i++) {
+                deleteEdge(sentence,
+                           sentence.getNode(((Integer) singleClickedNodes.get(i)).intValue()));
+            }
+
+            // add the created node as child of the parent node
+            ArrayList list = new ArrayList();
+            list.add(sentence.getNonterminalPositionOf(node.getID()) + ims.tiger.system.Constants.CUT);
+            addChildren(sentence, (NT_Node) sentence.getNode(parent_id), list);
+        }
+
         addChildren(sentence, node, singleClickedNodes);
 
         sentence.orderSentenceByPrecedence();
@@ -709,8 +727,8 @@ public class GraphPanelEditorMouseListener extends GraphPanelMouseListener {
             addParentAction.setEnabled(singleClickedNodes.size() > 0);
 
             int clickedTNodeCount = 0;
+            Set clickedNodesParents = new HashSet();
 
-            //only nodes without further parent can be joined or removed
             for (int i = 0; i < singleClickedNodes.size(); i++) {
                 Node node = sentence.getNode(((Integer) singleClickedNodes.get(
                             i)).intValue());
@@ -721,16 +739,23 @@ public class GraphPanelEditorMouseListener extends GraphPanelMouseListener {
                     clickedTNodeCount++;
                 }
 
-                //nodes with parent cannot be deleted nor joined; sec edge well possible!
+                //nodes with parent cannot be deleted; sec edge well possible!
                 if (node.getParent() != -1) {
+
+                    clickedNodesParents.add(node.getParent());
+
                     deleteNodesAction.setEnabled(false);
-                    addParentAction.setEnabled(false);
 
                     //outgoing node might have parents, incoming nodes not
                     if (i > 0) {
                         addEdgeAction.setEnabled(false);
                     }
                 }
+            }
+
+            // nodes having different parents cannot be joined
+            if (clickedNodesParents.size() > 1) {
+                addParentAction.setEnabled(false);
             }
 
             //allow sec edge creation between two nodes
