@@ -540,12 +540,26 @@ public class GraphPanelEditorMouseListener extends GraphPanelMouseListener {
         Node node = sentence.getNode(nodeNr);
 
         if (node instanceof NT_Node) {
-            //reset feature EDGE in child nodes
+
+            int parentNodeNr  = node.getParent();
+            if (parentNodeNr != -1) {
+                deleteEdge(sentence, node);
+            }
+
+            //update feature EDGE in child nodes
             for (int j = 0; j < ((NT_Node) node).getChildsSize(); j++) {
-                Node childNode = sentence.getNode(((Integer) ((NT_Node) node).getChildAt(
-                            j)).intValue());
-                childNode.setParent(-1);
-                childNode.getFeatures().remove(Constants.EDGE);
+
+                int childNodeNr = ((Integer) ((NT_Node) node).getChildAt(j)).intValue();
+                Node childNode = sentence.getNode(childNodeNr);
+                childNode.setParent(parentNodeNr);
+                if (parentNodeNr != -1) {
+                    ((NT_Node) sentence.getNode(parentNodeNr)).addChild(childNodeNr);
+                    childNode.setFeature(Constants.EDGE, "");
+                }
+                else {
+                    childNode.getFeatures().remove(Constants.EDGE);
+                }
+
             }
 
             //delete node
@@ -739,12 +753,9 @@ public class GraphPanelEditorMouseListener extends GraphPanelMouseListener {
                     clickedTNodeCount++;
                 }
 
-                //nodes with parent cannot be deleted; sec edge well possible!
                 if (node.getParent() != -1) {
 
                     clickedNodesParents.add(node.getParent());
-
-                    deleteNodesAction.setEnabled(false);
 
                     //outgoing node might have parents, incoming nodes not
                     if (i > 0) {
