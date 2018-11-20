@@ -89,8 +89,8 @@
       <option name="Arial Unicode MS" style="plain" size="14"/>
       <option name="Bitstream Cyberbit" style="plain" size="14"/>
     </font>
-    <param att="suppressEdgeLabel" value="--"/>
-    <param att="suppressFeatureValue" value="--"/>
+    <param att="suppressEdgeLabel" value=""/>
+    <param att="suppressFeatureValue" value=""/>
  
   </config>
 

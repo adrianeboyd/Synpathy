@@ -153,17 +153,17 @@ public class Sentence {
     }
 
     /** Liefert den terminalen Knoten mit der Nummer index. */
-    public final Object getTerminalAt(int index) {
+    public final T_Node getTerminalAt(int index) {
         if (index >= Constants.CUT) {
             index -= Constants.CUT;
         }
 
-        return terminals.get(index);
+        return (T_Node) terminals.get(index);
     }
 
     /** Liefert den nicht-terminalen Knoten mit der Nummer index. */
-    public final Object getNonterminalAt(int index) {
-        return nonterminals.get(index);
+    public final NT_Node getNonterminalAt(int index) {
+        return (NT_Node) nonterminals.get(index);
     }
 
     /** Liefert die interne Nummer des Terminals mit dem angegebenen Attribut-Wert-Paar. */
@@ -349,7 +349,7 @@ public class Sentence {
         NT_Node ntnode = null;
 
         if (nodenr >= Constants.CUT) {
-            ntnode = (NT_Node) getNonterminalAt(nodenr - Constants.CUT);
+            ntnode = getNonterminalAt(nodenr - Constants.CUT);
             node = (Node) ntnode;
         }
         else {

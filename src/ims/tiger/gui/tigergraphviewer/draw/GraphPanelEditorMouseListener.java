@@ -349,7 +349,7 @@ public class GraphPanelEditorMouseListener extends GraphPanelMouseListener {
 
             Node childNode = sentence.getNode(childNodeNr);
             childNode.setParent(parentNodeNr + Constants.CUT);
-            childNode.setFeature(Constants.EDGE, "");
+            childNode.setFeature(Constants.EDGE, "--");
         }
     }
 
@@ -521,7 +521,7 @@ public class GraphPanelEditorMouseListener extends GraphPanelMouseListener {
     private void deleteNode(Sentence sentence, int nodeNr) {
         Node node = sentence.getNode(nodeNr);
 
-        if (node instanceof NT_Node) {
+        if (node instanceof NT_Node) {        	
             //reset feature EDGE in child nodes
             for (int j = 0; j < ((NT_Node) node).getChildsSize(); j++) {
                 Node childNode = sentence.getNode(((Integer) ((NT_Node) node).getChildAt(
@@ -657,17 +657,36 @@ public class GraphPanelEditorMouseListener extends GraphPanelMouseListener {
         }
     }
 
-    private String proposeNodeId(Sentence sentence) {
-        int highestNodeNumber = sentence.getNonterminalsSize();
-        String proposal;
-
-        do {
-            highestNodeNumber++;
-            proposal = sentence.getSentenceID() + "." + highestNodeNumber;
-        } while (sentence.getNonterminalPositionOf(proposal) > -1);
-
-        return proposal;
-    }
+    /**
+     * Generates TIGER-style node ID for new node.
+     * 
+     * @param sentence
+     * @return
+     */
+	private String proposeNodeId(Sentence sentence) {
+		List<Node> NTs = sentence.getNonterminals();
+		List<String> sentenceIds = new ArrayList<String>();
+		
+		for (Node thisNode : NTs) {
+			sentenceIds.add(thisNode.getID());
+		}
+		
+		int counter = 500;
+		String proposal;
+		boolean accepted = false;
+		
+		do {
+			proposal = sentence.getSentenceID() + "_" + counter;
+			
+			if (!sentenceIds.contains(proposal)) {
+				accepted = true;
+			}
+			
+			counter++;
+		} while (!accepted);
+		
+		return proposal;
+	} 
 
     /**
      * enabled, disable actions in correspondence to marked items
@@ -683,12 +702,23 @@ public class GraphPanelEditorMouseListener extends GraphPanelMouseListener {
 
             for (int i = 0; i < singleClickedEdges.size(); i++) {
                 Node node = ((DisplayNode) singleClickedEdges.get(i)).getNode();
-
-                //each nt node has to have at least one child
-                NT_Node parentNode = (NT_Node) sentence.getNode(node.getParent());
-
-                if (parentNode.getChildsSize() < 3) {
-                    deleteEdgesAction.setEnabled(false);
+                
+                // instead of counting children, don't allow delete 
+                // actions that would leave any non-terminal nodes in the tree 
+                // with no terminal descendants
+                // 
+                // (note: I think a better filter would check that all 
+                // non-terminals are attached to the root, but the problem 
+                // is that if the edge we're deleting detaches the root from 
+                // the rest of the sentence, it becomes trickier to run the
+                // test, so this is a simpler compromise)
+                List<Node> nonterminals = sentence.getNonterminals();
+                
+                for (Node n : nonterminals) {
+                	NT_Node nt = (NT_Node) n;                	
+                	if(!hasPathToTerminal(sentence, nt, node)) {
+                		deleteEdgesAction.setEnabled(false);
+                	}
                 }
             }
         }
@@ -707,7 +737,7 @@ public class GraphPanelEditorMouseListener extends GraphPanelMouseListener {
                 (singleClickedNodes.size() > 1));
 
             //TODO: should be possible to allow single childs
-            addParentAction.setEnabled(singleClickedNodes.size() > 1);
+            addParentAction.setEnabled(singleClickedNodes.size() > 0);
 
             int clickedTNodeCount = 0;
 
@@ -751,6 +781,34 @@ public class GraphPanelEditorMouseListener extends GraphPanelMouseListener {
                 addSecEdgeAction.setEnabled(false);
             }
         }
+    }
+    
+	/**
+	 * Determines whether there is a path down from the non-terminal nt to some
+	 * terminal, skipping any paths that go through through skippedNode.  This
+	 * determines whether removing the edge above skippedNode would leave a
+	 * non-terminal disconnected from the rest of the sentence.
+	 * 
+	 * @param s
+	 * @param nt
+	 * @param skippedNode
+	 * @return
+	 */
+    private boolean hasPathToTerminal(Sentence s, NT_Node nt, Node skippedNode) {
+    	List<Integer> children = nt.getChilds();
+    	
+    	for (int c : children) {
+    		Node child = s.getNode(c);
+    		if (child.getID() != skippedNode.getID()) {
+    			if (child.isTerminal()) {
+    				return true;
+    			} else {
+    				return hasPathToTerminal(s, (NT_Node) child, skippedNode);
+    			}
+    		}
+    	}
+    	
+    	return false;
     }
 
     /**

@@ -849,28 +849,28 @@ public class GraphViewerContentPane extends JPanel {
             }
 
             try {
-                ExportManager export = new ExportManager(((CorpusForest) forest).getCorpus(),
-                        install_dir);
-                export.setConfiguration(false, true, false, false, 2);
-                export.saveMatchAsXML(null, file, true, true);
-                ((CorpusForest) forest).setModified(false);
+            	ExportManager export = new ExportManager(((CorpusForest) forest).getCorpus(),
+            			install_dir);
+            	export.setConfiguration(true, true, false, false, 2);
+            	export.saveMatchAsXML(null, file, true, true);
+            	((CorpusForest) forest).setModified(false);
 
-                try {
-                    lastUsedCorpusURL = new URL("file:" +
-                            file.getCanonicalPath());
-                } catch (Exception e) {
-                }
+            	try {
+            		lastUsedCorpusURL = new URL("file:" +
+            				file.getCanonicalPath());
+            	} catch (Exception e) {
+            	}
 
-                /*        ExportDialog exportDialog = new ExportDialog(install_dir,
+            	/*        ExportDialog exportDialog = new ExportDialog(install_dir,
                                 working_dir, getAncestorFrame());
                         exportDialog.update(((CorpusForest) forest).getCorpus(), null,
                             forest.getCurrentMatchNumber());
                         exportDialog.setVisible(true);*/
             } catch (Exception exp) {
-                logger.error("Error saving sentences: " + exp.getMessage());
-                JOptionPane.showMessageDialog(this,
-                    "Error saving sentences:\n" + exp.getMessage(),
-                    "Save error", JOptionPane.ERROR_MESSAGE);
+            	logger.error("Error saving sentences: " + exp.getMessage());
+            	JOptionPane.showMessageDialog(this,
+            			"Error saving sentences:\n" + exp.getMessage(),
+            			"Save error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }

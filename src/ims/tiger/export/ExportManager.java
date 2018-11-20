@@ -768,12 +768,23 @@ public class ExportManager {
             // <graph>
             Element struct = new Element("graph");
             s.addContent(struct);
+            
+            // the root node is not properly tracked during editing,
+            // so this makes sure that the root node is included
+            // in the export only when there is exactly one root node
+            // in the tree
+            List<Node> nts = sentence.getNonterminals();
+            int rootCount = 0;
+            String rootNodeId = "";
+            for (Node n : nts) {
+            	if (n.getParent() == -1) {
+            		rootCount++;
+            		rootNodeId = n.getID();
+            	}
+            }
 
-            int rootNode = sentence.getRoot();
-
-            if (rootNode > -1) {
-                String root_id = sentence.getNode(sentence.getRoot()).getID();
-                struct.setAttribute("root", IDSIGN + root_id);
+            if (rootCount == 1) {
+            	struct.setAttribute("root", IDSIGN + rootNodeId);
             }
 
             if (sentence.crossingEdges()) {

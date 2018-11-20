@@ -127,7 +127,7 @@ public class GraphConstants {
     public static Color virtualRootNodeColor = new Color(128, 128, 128);
 
     /** Holds value of property DOCUMENT ME! */
-    public static String suppressEdgeLabel = "--";
+    public static String suppressEdgeLabel = "";
 
     /** Holds value of property DOCUMENT ME! */
     public static String suppressFeatureValue = "";

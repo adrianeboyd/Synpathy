@@ -64,8 +64,8 @@ public class TIGERGraphViewerConfiguration implements Serializable {
     private int windowHeight = 600;
 
     // Unterdruecke manche Belegungen (sieht netter aus)
-    private String suppressEdgeLabel = "--";
-    private String suppressFeatureValue = "--";
+    private String suppressEdgeLabel = "";
+    private String suppressFeatureValue = "";
 
     // Unterdruecke sekundaere Kanten
     private boolean secondaryEdgeDisplay = true;
